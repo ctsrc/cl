@@ -31,7 +31,10 @@ And you can see the Amazon listing for the book here (affiliate link):
 
 You will probably want to buy it used. That's what I did. I mean, it's
 a good book, but I don't think almost any book should cost you >$100 USD
-in 2021-dollars. Buying it used from Amazon you can get it at a decent price.
+in 2021-dollars. Somewhere between $15 and $45 is a fair price
+in 2021-dollars for most good books.
+
+Buying it used from Amazon you can get it at a decent price.
 Buying it new from Amazon will cost you over $100 at the moment. So yeah,
 buy it used somewhere. Either at Amazon or someplace else.
 
