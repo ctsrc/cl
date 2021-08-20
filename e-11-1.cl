@@ -9,19 +9,20 @@
 ;
 
 (defclass rectangle ()
-  (height width))
+  ((height :accessor rectangle-height)
+   (width  :accessor rectangle-width)))
 
 (defclass circle ()
-  (radius))
+  ((radius :accessor circle-radius)))
 
 (defmethod area ((x rectangle))
-  (* (slot-value x 'height) (slot-value x 'width)))
+  (* (rectangle-height x) (rectangle-width x)))
 
 (defmethod area ((x circle))
-  (* pi (expt (slot-value x 'radius) 2)))
+  (* pi (expt (circle-radius x) 2)))
 
 (princ (let ((r (make-instance 'rectangle)))
-         (setf (slot-value r 'height) 2
-               (slot-value r 'width)  3)
+         (setf (rectangle-height r) 2
+               (rectangle-width  r) 3)
          (area r)))
 (terpri)
