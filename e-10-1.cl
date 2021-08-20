@@ -1,7 +1,7 @@
 #!/usr/bin/env sbcl --script
 
 ;
-; # Chapter 10.8 – Exercise 1.
+; # Chapter 10 – Exercise 1.
 ;
 ; > If x is a, y is b, and z is (c d), write backquoted expressions
 ; > containing only variables that yield each of the following:

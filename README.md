@@ -41,11 +41,11 @@ All the solutions include a comment at the start of the file, with a reproductio
 of the assignment text so that it makes sense to the reader what the program is trying
 to do without having to consult with the paperback copy of the ANSI Common Lisp book.
 
-For example, here's the comment that you will find at the top of the file `e-10-8-1.cl`:
+For example, here's the comment that you will find at the top of the file `e-10-1.cl`:
 
 ```sbcl
 ;
-; # Chapter 10.8 – Exercise 1.
+; # Chapter 10 – Exercise 1.
 ;
 ; > If x is a, y is b, and z is (c d), write backquoted expressions
 ; > containing only variables that yield each of the following:
@@ -64,7 +64,7 @@ chapter and exercise number.
 Run any of the solutions, e.g.:
 
 ```zsh
-./e-10-8-1.cl
+./e-10-1.cl
 ```
 
 Requires that `sbcl` is installed on the computer. Refer to *prerequisites* below.
