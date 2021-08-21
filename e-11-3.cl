@@ -42,19 +42,49 @@
 (defun resolve-specifics (query-cls)
   (progn
     (defparameter *classes-children* (make-hash-table))
-    (resolve-specifics-inner-populate query-cls (gethash query-cls *classes-parents*))))
+    (resolve-specifics-inner-populate query-cls (gethash query-cls *classes-parents*))
+    (cons query-cls (resolve-specifics-inner-walk query-cls (gethash query-cls *classes-parents*)))))
 
-(defun resolve-specifics-inner-populate (child parents)
-  (princ child)
-  (princ " ")
-  (princ parents)
+(defun resolve-specifics-inner-populate (curr-child parents)
+  (if parents
+    (let* ((curr-parent (car parents))
+           (currently-known-children (gethash curr-parent *classes-children*)))
+      (if currently-known-children
+          (setf (gethash curr-parent *classes-children*) (cons currently-known-children (cons curr-child nil)))
+          (setf (gethash curr-parent *classes-children*) (cons curr-child nil)))
+      (resolve-specifics-inner-populate curr-parent (gethash curr-parent *classes-parents*))
+      (resolve-specifics-inner-populate curr-child (cdr parents)))))
+
+(defun resolve-specifics-inner-walk (curr-child parents)
+  (princ (list "curr-child" curr-child "parents" parents))
   (terpri)
   (if parents
-    (let* ((parent (car parents))
-           (currently-known-children (gethash parent *classes-children*)))
-      (setf (gethash parent *classes-children*) (cons child currently-known-children))
-      (resolve-specifics-inner-populate parent (gethash parent *classes-parents*))
-      (resolve-specifics-inner-populate child (cdr parents)))))
+    (let* ((curr-parent (car parents))
+           (other-parents (cdr parents))
+           (other-parents-walked (resolve-specifics-inner-walk curr-child  other-parents)))
+      (if (is-last-child? curr-child (gethash curr-parent *classes-children*))
+        (progn
+          (princ "  is-last-child")
+          (terpri)
+          (let ((curr-parent-walked (resolve-specifics-inner-walk curr-parent (gethash curr-parent *classes-parents*))))
+            (if curr-parent-walked
+              (cons curr-parent-walked other-parents-walked)
+              other-parents-walked)))
+        (progn
+          (princ "  not-last-child")
+          (terpri)
+          other-parents-walked)))))
+
+(defun is-last-child? (curr-child children-of-parent)
+  (princ "    ")
+  (princ (list "curr-child" curr-child "children-of-parent" children-of-parent))
+  (terpri)
+  (if children-of-parent
+    (let ((cmp-child (car children-of-parent))
+          (rem-children (cdr children-of-parent)))
+    (if (and (equal curr-child cmp-child) (not rem-children))
+      t
+      (is-last-child? curr-child rem-children)))))
 
 ; Given body
 
@@ -70,26 +100,26 @@
 
 ; Subquestion a)
 
-(resolve-specifics 'a)
+(princ (resolve-specifics 'a))
 (terpri)
 ;(princ *classes-children*)
 ;(terpri)
-(princ (gethash 'a *classes-children*))
-(terpri)
-(princ (gethash 'c *classes-children*))
-(terpri)
-(princ (gethash 'd *classes-children*))
-(terpri)
-(princ (gethash 'e *classes-children*))
-(terpri)
-(princ (gethash 'f *classes-children*))
-(terpri)
-(princ (gethash 'g *classes-children*))
-(terpri)
-(princ (gethash 'h *classes-children*))
-(terpri)
+;(princ (gethash 'a *classes-children*))
+;(terpri)
+;(princ (gethash 'c *classes-children*))
+;(terpri)
+;(princ (gethash 'd *classes-children*))
+;(terpri)
+;(princ (gethash 'e *classes-children*))
+;(terpri)
+;(princ (gethash 'f *classes-children*))
+;(terpri)
+;(princ (gethash 'g *classes-children*))
+;(terpri)
+;(princ (gethash 'h *classes-children*))
+;(terpri)
 
 ; Subquestion b)
 
-;(princ (resolve-specifics 'b))
-;(terpri)
+(princ (resolve-specifics 'b))
+(terpri)
