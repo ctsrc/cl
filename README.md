@@ -78,9 +78,11 @@ Requires that `sbcl` is installed on the computer. Refer to *prerequisites* belo
   The PGM format is a lowest common denominator grayscale file format.
   It is designed to be extremely easy to learn and write programs for.
   See http://netpbm.sourceforge.net/doc/pgm.html for details
-  about the PGM format.  On macOS you can `open spheres.pgm` or
-  double-click on it and by default it will open in Preview where you can
-  view it. On other platforms there are programs that allow you to view
+  about the PGM format.
+
+  On macOS you can `open spheres.pgm` or double-click on it and
+  by default it will open in Preview where you can view it.
+  On other platforms there are programs that allow you to view
   PGM files as well. Look up the details for your platform online.
 
 ## Prerequisites
