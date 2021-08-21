@@ -18,8 +18,12 @@
 ; > (b) Do the same for b.
 ;
 
+(defparameter *classes-parents* nil)
+
 (defun read-top-level-class-defs (&rest body)
-  (read-top-level-class-defs-inner body))
+  (progn
+    (defparameter *classes-parents* (make-hash-table))
+    (read-top-level-class-defs-inner body)))
 
 (defun read-top-level-class-defs-inner (body)
   (let ((statement (car body)))
@@ -28,13 +32,10 @@
             (parents (caddr statement))
             (cls-more (cdddr statement)))
         (class-def cls parents cls-more)
-        (terpri)
         (read-top-level-class-defs-inner (cdr body))))))
 
 (defun class-def (cls parents class-body)
-  (princ cls)
-  (princ " ")
-  (princ parents))
+  (setf (gethash cls *classes-parents*) parents))
 
 (read-top-level-class-defs
   '(defclass a (c d) ())
@@ -45,3 +46,6 @@
   '(defclass f (h) ())
   '(defclass g (h) ())
   '(defclass h () ()))
+
+(princ (gethash 'a *classes-parents*))
+(terpri)
