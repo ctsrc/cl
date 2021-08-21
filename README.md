@@ -72,7 +72,7 @@ Run any of the solutions, e.g.:
 
 Requires that `sbcl` is installed on the computer. Refer to *prerequisites* below.
 
-### Special notes about some of the solutions.
+### Special notes about running some of the solutions
 
 * `e-11-2.cl` produces a file named `spheres.pgm` as its output.
   The PGM format is a lowest common denominator grayscale file format.
