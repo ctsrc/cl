@@ -43,7 +43,7 @@
   (progn
     (defparameter *classes-children* (make-hash-table))
     (resolve-specifics-inner-populate query-cls (gethash query-cls *classes-parents*))
-    (cons query-cls (resolve-specifics-inner-walk query-cls (gethash query-cls *classes-parents*)))))
+    (cons query-cls (resolve-specifics-inner-walk query-cls (gethash query-cls *classes-parents*) 0))))
 
 (defun resolve-specifics-inner-populate (curr-child parents)
   (if parents
@@ -55,7 +55,11 @@
       (resolve-specifics-inner-populate curr-parent (gethash curr-parent *classes-parents*))
       (resolve-specifics-inner-populate curr-child (cdr parents)))))
 
-(defun resolve-specifics-inner-walk (curr-child parents)
+(defun princ-indent (curr-depth)
+  (princ (make-string (* 2 curr-depth) :initial-element #\ )))
+
+(defun resolve-specifics-inner-walk (curr-child parents curr-depth)
+  (princ-indent curr-depth)
   (princ "curr-child ")
   (princ curr-child)
   (princ ", parents ")
@@ -64,27 +68,29 @@
   (if parents
     (let* ((curr-parent (car parents))
            (other-parents (cdr parents))
-           (other-parents-walked (resolve-specifics-inner-walk curr-child  other-parents)))
-      (if (is-last-child? curr-child (gethash curr-parent *classes-children*))
+           (other-parents-walked (resolve-specifics-inner-walk curr-child other-parents (+ 1 curr-depth))))
+      ;(princ-indent (+ 1 curr-depth))
+      ;(princ "curr-parent ")
+      ;(princ curr-parent)
+      ;(terpri)
+      (if (is-last-child? curr-child (gethash curr-parent *classes-children*) curr-depth)
         (progn
-          ;(princ "    ")
-          (princ "is-last-child. curr-parent ")
-          (princ curr-parent)
-          (terpri)
-          (let ((curr-parent-walked (resolve-specifics-inner-walk curr-parent (gethash curr-parent *classes-parents*))))
+          ;(princ-indent (+ 3 curr-depth))
+          ;(princ "is-last-child")
+          ;(terpri)
+          (let ((curr-parent-walked (resolve-specifics-inner-walk curr-parent (gethash curr-parent *classes-parents*) (+ 1 curr-depth))))
             (if curr-parent-walked
               (cons curr-parent-walked other-parents-walked)
               other-parents-walked)))
         (progn
-          ;(princ "    ")
-          (princ "not-last-child. curr-parent ")
-          (princ curr-parent)
-          (terpri)
+          ;(princ-indent (+ 3 curr-depth))
+          ;(princ "not-last-child")
+          ;(terpri)
           other-parents-walked)))))
 
-(defun is-last-child? (curr-child children-of-parent)
-  ;(princ "  ")
-  (princ "curr-child ")
+(defun is-last-child? (curr-child children-of-parent curr-depth)
+  (princ-indent (+ 2 curr-depth))
+  (princ "is-last-child? curr-child ")
   (princ curr-child)
   (princ ", children-of-parent ")
   (princ children-of-parent)
@@ -94,7 +100,7 @@
           (rem-children (cdr children-of-parent)))
     (if (and (equal curr-child cmp-child) (not rem-children))
       t
-      (is-last-child? curr-child rem-children)))))
+      (is-last-child? curr-child rem-children (+ 1 curr-depth))))))
 
 ; Given body
 
