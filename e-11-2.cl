@@ -7,7 +7,7 @@
 ; > and intersect and normal are generic functions.
 ;
 
-; Code from Figure 9.2
+; Code from Figure 9.2, with modifications
 
 (defun sq (x) (* x x))
 
@@ -18,8 +18,16 @@
   (let ((d (mag x y z)))
     (values (/ x d) (/ y d) (/ z d))))
 
-(defstruct (point (:conc-name nil))
-  x y z)
+(defclass point ()
+  ((x :accessor x
+      :initarg :x
+      :initform 0)
+   (y :accessor y
+      :initarg :y
+      :initform 0)
+   (z :accessor z
+      :initarg :z
+      :initform 0)))
 
 (defun distance (p1 p2)
   (mag (- (x p1) (x p2))
@@ -35,12 +43,14 @@
             (min (/ (+ (- b) discrt) (* 2 a))
                  (/ (- (- b) discrt) (* 2 a))))))))
 
-; Code from Figure 9.3
+; Code from Figure 9.3, with modifications
 
-(defstruct surface color)
+(defclass surface ()
+  ((color :accessor color
+          :initarg :color)))
 
 (defparameter *world* nil)
-(defconstant eye (make-point :x 0 :y 0 :z 200))
+(defconstant eye (make-instance 'point :x 0 :y 0 :z 200))
 
 (defun tracer (pathname &optional (res 1))
   (with-open-file (p pathname :direction :output)
@@ -62,7 +72,7 @@
 (defun sendray (pt xr yr zr)
   (multiple-value-bind (s int) (first-hit pt xr yr zr)
     (if s
-      (* (lambert s int xr yr zr) (surface-color s))
+      (* (lambert s int xr yr zr) (color s))
       0)))
 
 (defun first-hit (pt xr yr zr)
@@ -79,16 +89,18 @@
   (multiple-value-bind (xn yn zn) (normal s int)
     (max 0 (+ (* xr xn) (* yr yn) (* zr zn)))))
 
-; Code from Figure 9.5
+; Code from Figure 9.5, with modifications
 
-(defstruct (sphere (:include surface))
-  radius center)
+(defclass sphere (point surface)
+  ((radius :accessor sphere-radius
+           :initarg :radius
+           :initform 1)))
 
 (defun defsphere (x y z r c)
-  (let ((s (make-sphere
+  (let ((s (make-instance 'sphere
              :radius r
-             :center (make-point :x x :y y :z z)
-             :color  c)))
+             :x x :y y :z z
+             :color c)))
     (push s *world*)
     s))
 
@@ -97,29 +109,24 @@
            s pt xr yr zr))
 
 (defun sphere-intersect (s pt xr yr zr)
-  (let* ((c (sphere-center s))
-         (n (minroot (+ (sq xr) (sq yr) (sq zr))
-                     (* 2 (+ (* (- (x pt) (x c)) xr)
-                             (* (- (y pt) (y c)) yr)
-                             (* (- (z pt) (z c)) zr)))
-                     (+ (sq (- (x pt) (x c)))
-                        (sq (- (y pt) (y c)))
-                        (sq (- (z pt) (z c)))
+  (let* ((n (minroot (+ (sq xr) (sq yr) (sq zr))
+                     (* 2 (+ (* (- (x pt) (x s)) xr)
+                             (* (- (y pt) (y s)) yr)
+                             (* (- (z pt) (z s)) zr)))
+                     (+ (sq (- (x pt) (x s)))
+                        (sq (- (y pt) (y s)))
+                        (sq (- (z pt) (z s)))
                         (- (sq (sphere-radius s)))))))
     (if n
-      (make-point :x (+ (x pt) (* n xr))
-                  :y (+ (y pt) (* n yr))
-                  :z (+ (z pt) (* n zr))))))
+      (make-instance 'point
+        :x (+ (x pt) (* n xr))
+        :y (+ (y pt) (* n yr))
+        :z (+ (z pt) (* n zr))))))
 
-(defun normal (s pt)
-  (funcall (typecase s (sphere #'sphere-normal))
-           s pt))
-
-(defun sphere-normal (s pt)
-  (let ((c (sphere-center s)))
-    (unit-vector (- (x c) (x pt))
-                 (- (y c) (y pt))
-                 (- (z c) (z pt)))))
+(defmethod normal ((s sphere) (pt point))
+  (unit-vector (- (x s) (x pt))
+               (- (y s) (y pt))
+               (- (z s) (z pt))))
 
 ; Code from Figure 9.6
 
