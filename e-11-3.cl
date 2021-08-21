@@ -34,7 +34,7 @@
         (class-def cls parents cls-more)
         (read-top-level-class-defs-inner (cdr body))))))
 
-(defun class-def (cls parents class-body)
+(defun class-def (cls parents class-more)
   (setf (gethash cls *classes-parents*) parents))
 
 (read-top-level-class-defs
