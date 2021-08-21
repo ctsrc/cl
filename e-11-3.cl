@@ -17,3 +17,24 @@
 ; >
 ; > (b) Do the same for b.
 ;
+
+(defun read-top-level-class-defs (&rest body)
+  (read-top-level-class-defs-inner body))
+
+(defun read-top-level-class-defs-inner (body)
+  (let ((statement (car body)))
+    (if statement
+      (progn
+        (princ statement)
+        (terpri)
+        (read-top-level-class-defs-inner (cdr body))))))
+
+(read-top-level-class-defs
+  '(defclass a (c d) ())
+  '(defclass b (d c) ())
+  '(defclass c () ())
+  '(defclass d (e f g) ())
+  '(defclass e () ())
+  '(defclass f (h) ())
+  '(defclass g (h) ())
+  '(defclass h () ()))
