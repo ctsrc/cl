@@ -86,7 +86,8 @@
           ;(princ-indent (+ 3 curr-depth))
           ;(princ "not-last-child")
           ;(terpri)
-          other-parents-walked)))))
+          other-parents-walked)))
+    curr-child))
 
 (defun is-last-child? (curr-child children-of-parent curr-depth)
   (princ-indent (+ 2 curr-depth))
