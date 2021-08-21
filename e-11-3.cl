@@ -23,11 +23,18 @@
 
 (defun read-top-level-class-defs-inner (body)
   (let ((statement (car body)))
-    (if statement
-      (progn
-        (princ statement)
+    (if (equal (car statement) 'defclass)
+      (let ((cls (cadr statement))
+            (parents (caddr statement))
+            (cls-more (cdddr statement)))
+        (class-def cls parents cls-more)
         (terpri)
         (read-top-level-class-defs-inner (cdr body))))))
+
+(defun class-def (cls parents class-body)
+  (princ cls)
+  (princ " ")
+  (princ parents))
 
 (read-top-level-class-defs
   '(defclass a (c d) ())
