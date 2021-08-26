@@ -87,14 +87,14 @@ Requires that `sbcl` is installed on the computer. Refer to *prerequisites* belo
 
 ## Prerequisites
 
-Install Steel Bank Common Lisp.
+Install *Steel Bank Common Lisp* and *Graphviz*.
 
 ### macOS
 
 Assuming you have [Homebrew](https://brew.sh/) installed:
 
 ```zsh
-brew install sbcl
+brew install sbcl graphviz
 ```
 
 ### FreeBSD
@@ -102,7 +102,7 @@ brew install sbcl
 (The command below needs to be run as root, I recommend using `doas` to execute commands as root.)
 
 ```zsh
-pkg install sbcl
+pkg install sbcl graphviz
 ```
 
 ### Linux
@@ -113,34 +113,37 @@ Here's how to do it for some of the most common Linux distros.
 #### Debian / Ubuntu / KDE Neon / most Debian derivatives:
 
 ```zsh
-sudo apt-get install sbcl
+sudo apt-get install sbcl graphviz
 ```
 
 #### Fedora
 
 ```zsh
-sudo dnf install sbcl
+sudo dnf install sbcl graphviz
 ```
 
 #### openSUSE Tumbleweed
 
 ```zsh
-sudo zypper install sbcl
+sudo zypper install sbcl graphviz
 ```
 
 #### openSUSE Leap
 
-Not available on the current version of openSUSE Leap (15.3) at the time of this writing
-according to https://software.opensuse.org/package/sbcl
+Package `sbcl` is not available for openSUSE Leap 15.3 at the time of this
+writing according to https://software.opensuse.org/package/sbcl
+
+Package `graphviz` is not available for openSUSE Leap 15.3 at the time of this
+writing according to https://software.opensuse.org/package/graphviz
 
 #### Arch Linux
 
 ```zsh
-sudo pacman -S sbcl
+sudo pacman -S sbcl graphviz
 ```
 
 #### Gentoo Linux
 
 ```zsh
-emerge --ask dev-lisp/sbcl
+emerge --ask dev-lisp/sbcl media-gfx/graphviz
 ```
