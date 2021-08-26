@@ -65,7 +65,7 @@
 
 ; Helper functions
 
-; From https://stackoverflow.com/a/9729303
+; Based on https://stackoverflow.com/a/9729303
 (defun print-hash-table (hash-table fun)
   (loop for key being the hash-keys of hash-table
         for value being the hash-values of hash-table
