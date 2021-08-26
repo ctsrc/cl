@@ -85,15 +85,6 @@
             :with-network-children-table with-network-children-table)
           ())))))
 
-;(defun resolve-specifics-inner-populate (curr-child parents)
-;  (let* ((curr-parent (car parents))
-;         (currently-known-children (gethash curr-parent *classes-children*)))
-;    (if curr-parent
-;      (progn
-;        (setf (gethash curr-parent *classes-children*) (cons curr-child currently-known-children))
-;        (resolve-specifics-inner-populate curr-parent (gethash curr-parent *classes-parents*)))
-;        (resolve-specifics-inner-populate curr-child (cdr parents)))))
-
 ; Helper functions
 
 ; Based on https://stackoverflow.com/a/9729303
