@@ -2,8 +2,8 @@
 
 This repository contains solutions that I have written to a few
 of the exercises from the book *ANSI Common Lisp* by Paul Graham.
-The book came out in 1996, and is an interesting read today as well
-(in 2021), in my opinion.
+The book came out in year 1996, and is an interesting read today
+(year 2021) as well, in my opinion.
 
 ## Paul Graham
 
