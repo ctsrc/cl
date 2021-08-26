@@ -1,0 +1,16 @@
+graph {
+  rankdir = BT;
+  "standard-object" -- t [label="↑"];
+  a -- c [label = "⇅"];
+  a -- d [label = "↑"];
+  {rank = same; c; d;}
+  c -- "standard-object" [style = dashed];
+  d -- e [label = "⇅"];
+  d -- f [label = "⇅"];
+  d -- g [label = "↑"];
+  e -- "standard-object" [style = dashed];
+  f -- h [style = dashed];
+  g -- h [label = "↑"];
+  {rank = same; e; f; g;}
+  h -- "standard-object" [label = "↑"];
+}

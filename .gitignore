@@ -1,2 +1,4 @@
-/spheres.pgm
+*.pgm
 .DS_Store
+*.png
+*.swp
