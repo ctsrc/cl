@@ -87,7 +87,16 @@ Requires that `sbcl` is installed on the computer. Refer to *prerequisites* belo
 
 ## Prerequisites
 
-Install *Steel Bank Common Lisp* and *Graphviz*.
+The following dependencies need to be installed in order
+to run the code in this repository and in order to be able
+to view the generated output:
+
+* Steel Bank Common Lisp
+* Graphviz
+
+The subsections that follow explain how to install these
+dependencies on some common Unix operating systems, including
+macOS, FreeBSD and some popular Linux distros.
 
 ### macOS
 
