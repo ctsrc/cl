@@ -18,50 +18,58 @@
 ; > (b) Do the same for b.
 ;
 
-(defparameter *classes-parents* nil)
+(defun populate-network-parents-table (&rest body)
+  (let ((parents-netw (make-hash-table)))
+    (class-def
+      :cls 't
+      :parents nil
+      :with-network-parents-table parents-netw)
+    (class-def
+      :cls 'standard-object
+      :parents '(t)
+      :with-network-parents-table parents-netw)
+    (populate-network-parents-table-inner
+      :remaining-body body
+      :with-network-parents-table parents-netw)
+    parents-netw))
 
-(defun read-top-level-class-defs (&rest body)
-  (progn
-    (defparameter *classes-parents* (make-hash-table))
-    (class-def 't nil)
-    (class-def 'standard-object '(t))
-    (read-top-level-class-defs-inner body)))
-
-(defun read-top-level-class-defs-inner (body)
-  (if (not body)
+(defun populate-network-parents-table-inner (&key remaining-body with-network-parents-table)
+  (if (not remaining-body)
     ()
-    (let ((statement (car body)))
+    (let ((statement (car remaining-body)))
       (if (equal (car statement) 'defclass)
         (let ((cls (cadr statement))
               (parents (caddr statement))
               (cls-more (cdddr statement)))
           (if parents
-            (class-def cls parents)
-            (class-def cls '(standard-object)))))
-      (read-top-level-class-defs-inner (cdr body)))))
+            (class-def
+              :cls cls
+              :parents parents
+              :with-network-parents-table with-network-parents-table)
+            (class-def
+              :cls cls
+              :parents '(standard-object)
+              :with-network-parents-table with-network-parents-table))))
+      (populate-network-parents-table-inner
+        :remaining-body (cdr remaining-body)
+        :with-network-parents-table with-network-parents-table))))
 
-(defun class-def (cls parents)
-  (setf (gethash cls *classes-parents*) parents))
+(defun class-def (&key cls parents with-network-parents-table)
+  (setf (gethash cls with-network-parents-table) parents))
 
-(defparameter *classes-children* nil)
+(defun populate-network-children-table (&key for-root with-network-parents-table)
+  (let ((children-netw (make-hash-table)))
+       ()
+       children-netw))
 
-(defun resolve-specifics (query-cls)
-  (progn
-    (defparameter *classes-children* (make-hash-table))
-    (resolve-specifics-inner-populate query-cls (gethash query-cls *classes-parents*))))
-
-(defun resolve-specifics-inner-populate (curr-child parents)
-  (princ curr-child)
-  (princ " ")
-  (princ parents)
-  (terpri)
-  (let* ((curr-parent (car parents))
-         (currently-known-children (gethash curr-parent *classes-children*)))
-    (if curr-parent
-      (progn
-        (setf (gethash curr-parent *classes-children*) (cons curr-child currently-known-children))
-        (resolve-specifics-inner-populate curr-parent (gethash curr-parent *classes-parents*)))
-        (resolve-specifics-inner-populate curr-child (cdr parents)))))
+;(defun resolve-specifics-inner-populate (curr-child parents)
+;  (let* ((curr-parent (car parents))
+;         (currently-known-children (gethash curr-parent *classes-children*)))
+;    (if curr-parent
+;      (progn
+;        (setf (gethash curr-parent *classes-children*) (cons curr-child currently-known-children))
+;        (resolve-specifics-inner-populate curr-parent (gethash curr-parent *classes-parents*)))
+;        (resolve-specifics-inner-populate curr-child (cdr parents)))))
 
 ; Helper functions
 
@@ -76,24 +84,27 @@
 
 ; Given body
 
-(read-top-level-class-defs
-  '(defclass a (c d) ())
-  '(defclass b (d c) ())
-  '(defclass c () ())
-  '(defclass d (e f g) ())
-  '(defclass e () ())
-  '(defclass f (h) ())
-  '(defclass g (h) ())
-  '(defclass h () ()))
+(defparameter *classes-parents* nil)
+(setf *classes-parents*
+  (populate-network-parents-table
+    '(defclass a (c d) ())
+    '(defclass b (d c) ())
+    '(defclass c () ())
+    '(defclass d (e f g) ())
+    '(defclass e () ())
+    '(defclass f (h) ())
+    '(defclass g (h) ())
+    '(defclass h () ())))
 
 (princ "hash-table *classes-parents*:")
 (terpri)
-(princ (print-hash-table *classes-parents* 'princ))
-(terpri)
+(print-hash-table *classes-parents* 'princ)
 
 ; Subquestion a)
 
-;(princ (resolve-specifics 'a))
+(defparameter *classes-children* nil)
+(populate-network-children-table :with-root 'a :with-network-parents-table *classes-parents*)
+
 ;(terpri)
 ;;(princ *classes-children*)
 ;;(terpri)
