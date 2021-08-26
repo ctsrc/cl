@@ -23,18 +23,24 @@
 (defun read-top-level-class-defs (&rest body)
   (progn
     (defparameter *classes-parents* (make-hash-table))
+    (class-def 't nil)
+    (class-def 'standard-object '(t))
     (read-top-level-class-defs-inner body)))
 
 (defun read-top-level-class-defs-inner (body)
-  (let ((statement (car body)))
-    (if (equal (car statement) 'defclass)
-      (let ((cls (cadr statement))
-            (parents (caddr statement))
-            (cls-more (cdddr statement)))
-        (class-def cls parents cls-more)
-        (read-top-level-class-defs-inner (cdr body))))))
+  (if (not body)
+    ()
+    (let ((statement (car body)))
+      (if (equal (car statement) 'defclass)
+        (let ((cls (cadr statement))
+              (parents (caddr statement))
+              (cls-more (cdddr statement)))
+          (if parents
+            (class-def cls parents)
+            (class-def cls '(standard-object)))))
+      (read-top-level-class-defs-inner (cdr body)))))
 
-(defun class-def (cls parents cls-more)
+(defun class-def (cls parents)
   (setf (gethash cls *classes-parents*) parents))
 
 (defparameter *classes-children* nil)
@@ -42,66 +48,31 @@
 (defun resolve-specifics (query-cls)
   (progn
     (defparameter *classes-children* (make-hash-table))
-    (resolve-specifics-inner-populate query-cls (gethash query-cls *classes-parents*))
-    (cons query-cls (resolve-specifics-inner-walk query-cls (gethash query-cls *classes-parents*) 0))))
+    (resolve-specifics-inner-populate query-cls (gethash query-cls *classes-parents*))))
 
 (defun resolve-specifics-inner-populate (curr-child parents)
-  (if parents
-    (let* ((curr-parent (car parents))
-           (currently-known-children (gethash curr-parent *classes-children*)))
-      (if currently-known-children
-          (setf (gethash curr-parent *classes-children*) (cons currently-known-children (cons curr-child nil)))
-          (setf (gethash curr-parent *classes-children*) (cons curr-child nil)))
-      (resolve-specifics-inner-populate curr-parent (gethash curr-parent *classes-parents*))
-      (resolve-specifics-inner-populate curr-child (cdr parents)))))
-
-(defun princ-indent (curr-depth)
-  (princ (make-string (* 2 curr-depth) :initial-element #\ )))
-
-(defun resolve-specifics-inner-walk (curr-child parents curr-depth)
-  (princ-indent curr-depth)
-  (princ "curr-child ")
   (princ curr-child)
-  (princ ", parents ")
+  (princ " ")
   (princ parents)
   (terpri)
-  (if parents
-    (let* ((curr-parent (car parents))
-           (other-parents (cdr parents))
-           (other-parents-walked (resolve-specifics-inner-walk curr-child other-parents (+ 1 curr-depth))))
-      ;(princ-indent (+ 1 curr-depth))
-      ;(princ "curr-parent ")
-      ;(princ curr-parent)
-      ;(terpri)
-      (if (is-last-child? curr-child (gethash curr-parent *classes-children*) curr-depth)
-        (progn
-          ;(princ-indent (+ 3 curr-depth))
-          ;(princ "is-last-child")
-          ;(terpri)
-          (let ((curr-parent-walked (resolve-specifics-inner-walk curr-parent (gethash curr-parent *classes-parents*) (+ 1 curr-depth))))
-            (if curr-parent-walked
-              (cons curr-parent-walked other-parents-walked)
-              other-parents-walked)))
-        (progn
-          ;(princ-indent (+ 3 curr-depth))
-          ;(princ "not-last-child")
-          ;(terpri)
-          other-parents-walked)))
-    curr-child))
+  (let* ((curr-parent (car parents))
+         (currently-known-children (gethash curr-parent *classes-children*)))
+    (if curr-parent
+      (progn
+        (setf (gethash curr-parent *classes-children*) (cons curr-child currently-known-children))
+        (resolve-specifics-inner-populate curr-parent (gethash curr-parent *classes-parents*)))
+        (resolve-specifics-inner-populate curr-child (cdr parents)))))
 
-(defun is-last-child? (curr-child children-of-parent curr-depth)
-  (princ-indent (+ 2 curr-depth))
-  (princ "is-last-child? curr-child ")
-  (princ curr-child)
-  (princ ", children-of-parent ")
-  (princ children-of-parent)
-  (terpri)
-  (if children-of-parent
-    (let ((cmp-child (car children-of-parent))
-          (rem-children (cdr children-of-parent)))
-    (if (and (equal curr-child cmp-child) (not rem-children))
-      t
-      (is-last-child? curr-child rem-children (+ 1 curr-depth))))))
+; Helper functions
+
+; From https://stackoverflow.com/a/9729303
+(defun print-hash-table (hash-table fun)
+  (loop for key being the hash-keys of hash-table
+        for value being the hash-values of hash-table
+        do (princ key)
+           (princ " => ")
+           (princ value)
+           (terpri)))
 
 ; Given body
 
@@ -115,26 +86,31 @@
   '(defclass g (h) ())
   '(defclass h () ()))
 
+(princ "hash-table *classes-parents*:")
+(terpri)
+(princ (print-hash-table *classes-parents* 'princ))
+(terpri)
+
 ; Subquestion a)
 
-(princ (resolve-specifics 'a))
-(terpri)
-;(princ *classes-children*)
+;(princ (resolve-specifics 'a))
 ;(terpri)
-(princ (gethash 'a *classes-children*))
-(terpri)
-(princ (gethash 'c *classes-children*))
-(terpri)
-(princ (gethash 'd *classes-children*))
-(terpri)
-(princ (gethash 'e *classes-children*))
-(terpri)
-(princ (gethash 'f *classes-children*))
-(terpri)
-(princ (gethash 'g *classes-children*))
-(terpri)
-(princ (gethash 'h *classes-children*))
-(terpri)
+;;(princ *classes-children*)
+;;(terpri)
+;(princ (gethash 'a *classes-children*))
+;(terpri)
+;(princ (gethash 'c *classes-children*))
+;(terpri)
+;(princ (gethash 'd *classes-children*))
+;(terpri)
+;(princ (gethash 'e *classes-children*))
+;(terpri)
+;(princ (gethash 'f *classes-children*))
+;(terpri)
+;(princ (gethash 'g *classes-children*))
+;(terpri)
+;(princ (gethash 'h *classes-children*))
+;(terpri)
 
 ; Subquestion b)
 
