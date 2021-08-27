@@ -72,17 +72,17 @@
            (currently-known-children (gethash curr-parent with-network-children-table)))
       (if (not (member curr-child currently-known-children))
         (progn
-          (setf (gethash curr-parent with-network-children-table) (cons curr-child currently-known-children))
-          (populate-network-children-table
-            :curr-child curr-parent
-            :parents (gethash curr-parent with-network-parents-table)
-            :with-network-parents-table with-network-parents-table
-            :with-network-children-table with-network-children-table)
           (populate-network-children-table
             :curr-child curr-child
             :parents (cdr parents)
             :with-network-parents-table with-network-parents-table
             :with-network-children-table with-network-children-table)
+          (populate-network-children-table
+            :curr-child curr-parent
+            :parents (gethash curr-parent with-network-parents-table)
+            :with-network-parents-table with-network-parents-table
+            :with-network-children-table with-network-children-table)
+          (setf (gethash curr-parent with-network-children-table) (cons curr-child currently-known-children))
           ())))))
 
 ; Helper functions
