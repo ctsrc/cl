@@ -13,7 +13,7 @@ of startup incubator. Prior to that he co-founded
 [Viaweb](https://en.wikipedia.org/wiki/Viaweb), in 1995.
 They wrote Viaweb partially in Lisp.
 
-Paul has written a couple of other books as well, including
+pg has written a couple of other books as well, including
 *Hackers & Painters: Big Ideas from the Computer Age*. This other
 book I have read also and I enjoyed that one too.
 
