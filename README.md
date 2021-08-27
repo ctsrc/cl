@@ -48,13 +48,16 @@ Exercise solutions are named according to chapter and exercise number.
 
 ## Running the solutions
 
+Before attempting to run any of the solutions, please ensure that you have
+the necessary dependencies installed on your computer. You can find a list
+of dependencies that need to be installed in the section titled
+[Prerequisites](#prerequisites), below.
+
 Run any of the solutions, e.g.:
 
 ```zsh
 ./e-10-1.cl
 ```
-
-Requires that `sbcl` is installed on the computer. Refer to *prerequisites* below.
 
 ### Special notes about running some of the solutions
 
