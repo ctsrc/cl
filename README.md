@@ -7,7 +7,7 @@ The book came out in year 1996, and is an interesting read today
 
 ## Paul Graham
 
-pg, as you may know, was one of co-founders of
+pg, as you may know, was one of the co-founders of
 [Y Combinator](http://ycombinator.com/), the first of a new type
 of startup incubator. Prior to that he co-founded
 [Viaweb](https://en.wikipedia.org/wiki/Viaweb), in 1995.
