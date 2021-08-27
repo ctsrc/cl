@@ -44,23 +44,7 @@ All the solutions include a comment at the start of the file, with a reproductio
 of the assignment text so that it makes sense to the reader what the program is trying
 to do without having to consult with the paperback copy of the ANSI Common Lisp book.
 
-For example, here's the comment that you will find at the top of the file `e-10-1.cl`:
-
-```sbcl
-;
-; # Chapter 10 – Exercise 1.
-;
-; > If x is a, y is b, and z is (c d), write backquoted expressions
-; > containing only variables that yield each of the following:
-; >
-; > (a) ((C D) A Z)
-; > (b) (X B C D)
-; > (c) ((C D A) Z)
-;
-```
-
-And as you can probably tell from the above, exercise solutions are named according to
-chapter and exercise number.
+Exercise solutions are named according to chapter and exercise number.
 
 ## Running the solutions
 
